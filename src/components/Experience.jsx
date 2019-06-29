@@ -1,7 +1,15 @@
 import React, { Component } from "react";
-import { Button, Grid, Image, Segment, Label, Modal } from "semantic-ui-react";
-import Stepper from "./Stepper";
-import DocUpload from "./DocumentUploadModal";
+import {
+  Button,
+  Grid,
+  Image,
+  Segment,
+  Label,
+  Modal,
+  Step,
+  Header,
+  Icon
+} from "semantic-ui-react";
 
 class Experience extends Component {
   state = {};
@@ -30,5 +38,31 @@ const AddExperience = () => (
     </Grid.Column>
   </Grid>
 );
+
+const DocUpload = () => (
+  <Segment placeholder>
+    <div>
+      <Header icon>
+        <Icon name="pdf file outline" />
+        No documents are listed for this customer.
+      </Header>
+    </div>
+    <div>
+      <Button primary>Add Document</Button>
+    </div>
+  </Segment>
+);
+
+class Stepper extends Component {
+  state = {};
+  render() {
+    return (
+      <Step.Group ordered vertical>
+        <Step completed>Requested</Step>
+        <Step disabled>Validated</Step>
+      </Step.Group>
+    );
+  }
+}
 
 export default Experience;

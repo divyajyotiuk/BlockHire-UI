@@ -1,6 +1,13 @@
 import React, { Component } from "react";
-import { Button, Grid, Icon, Image, Segment, Label } from "semantic-ui-react";
-import Stepper from "./Stepper";
+import {
+  Button,
+  Grid,
+  Icon,
+  Image,
+  Segment,
+  Label,
+  Step
+} from "semantic-ui-react";
 
 class Education extends Component {
   state = {};
@@ -27,5 +34,16 @@ const AddEducation = () => (
     </Grid.Column>
   </Grid>
 );
+class Stepper extends Component {
+  state = {};
+  render() {
+    return (
+      <Step.Group ordered vertical>
+        <Step completed>Requested</Step>
+        <Step disabled>Validated</Step>
+      </Step.Group>
+    );
+  }
+}
 
 export default Education;

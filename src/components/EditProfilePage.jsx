@@ -43,9 +43,9 @@ class AboutContainer extends Component {
 
   renderUser = ({ user_id, firstname, lastname, bio, location }) => (
     <div key={user_id}>
-      <h2>
+      <h>
         {firstname} {lastname}{" "}
-      </h2>
+      </h>
       <h3>{bio}</h3>
       <h3>{location}</h3>
     </div>
