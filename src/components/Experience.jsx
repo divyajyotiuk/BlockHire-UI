@@ -176,9 +176,7 @@ class EditExperience extends Component {
           <Grid.Column width={5}>
             <Step.Group ordered vertical size="tiny">
               <Step completed={cert_state !== "Validate"}>Requested</Step>
-              <Step disabled completed={cert_state === "done"}>
-                Validated
-              </Step>
+              <Step completed={cert_state === "done"}>Validated</Step>
             </Step.Group>
           </Grid.Column>
         </Grid>
