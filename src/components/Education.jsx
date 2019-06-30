@@ -24,9 +24,7 @@ class Education extends Component {
 const AddEducation = () => (
   <Grid>
     <Grid.Column width={11}>
-      <Label as="a" attached="top right" icon>
-        <Icon name="edit outline" />
-      </Label>
+      <Label as="a" attached="top right" icon="edit outline" />
       <Image src="https://react.semantic-ui.com/images/wireframe/paragraph.png" />
     </Grid.Column>
     <Grid.Column width={5}>
