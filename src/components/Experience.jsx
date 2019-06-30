@@ -17,7 +17,7 @@ class Experience extends Component {
     super(props);
     this.state = {
       certificate_name: "",
-      _status: "NA",
+      _status: "Validate",
       sender: "dj1",
       certs: []
     };
@@ -84,6 +84,7 @@ class Experience extends Component {
             key={i}
             content={listItem.certiname}
             sender={listItem.sentby}
+            c_state={listItem.status}
           />
         ))}
       </Segment>
@@ -98,8 +99,12 @@ class Experience extends Component {
 // );
 
 class EditExperience extends Component {
-  state = { cert_state: "NA" };
+  state = { cert_state: "Validate" };
 
+  //check from database
+  componentDidMount() {
+    this.setState({ cert_state: this.props.c_state });
+  }
   //changes status to pending, disables the button
   onClickValidate = () => {
     this.setState({ cert_state: "pending" });
@@ -121,7 +126,23 @@ class EditExperience extends Component {
       .catch(error => console.error("Error:", error));
   };
 
-  onClickDelete = () => {};
+  onClickDelete = () => {
+    var url = "http://localhost:4000/validation";
+
+    fetch(url, {
+      method: "DELETE", // or 'PUT'
+      mode: "cors",
+      body: JSON.stringify({
+        cert: this.props.content
+      }), // data can be `string` or {object}!
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+      .then(res => res.body)
+      .then(response => console.log("Success:", JSON.stringify(response)))
+      .catch(error => console.error("Error:", error));
+  };
 
   render() {
     const { cert_state } = this.state;
@@ -141,16 +162,23 @@ class EditExperience extends Component {
             <Button
               onClick={this.onClickValidate}
               primary
-              disabled={cert_state === "pending"}
+              disabled={cert_state !== "Validate"}
             >
-              Validate
+              {cert_state}
             </Button>
-            <Button circular icon="trash" floated="right" />
+            <Button
+              circular
+              icon="trash"
+              floated="right"
+              onClick={this.onClickDelete}
+            />
           </Grid.Column>
           <Grid.Column width={5}>
             <Step.Group ordered vertical size="tiny">
-              <Step completed>Requested</Step>
-              <Step disabled>Validated</Step>
+              <Step completed={cert_state !== "Validate"}>Requested</Step>
+              <Step disabled completed={cert_state === "done"}>
+                Validated
+              </Step>
             </Step.Group>
           </Grid.Column>
         </Grid>

@@ -55,6 +55,18 @@ app.put("/validation", function(req, res) {
   );
 });
 
+app.delete("/validation", function(req, res) {
+  console.log(req.body);
+  connection.query(
+    "DELETE FROM `validateRequests` WHERE `certiname`=?",
+    [req.body.cert],
+    function(error, results, fields) {
+      if (error) throw error;
+      res.end("Record has been deleted!");
+    }
+  );
+});
+
 app.post("/certificate", function(req, res) {
   var postData = req.body;
   connection.query("INSERT INTO validateRequests SET ?", postData, function(
