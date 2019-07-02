@@ -160,20 +160,16 @@ const RouteCertificate = () => (
 );
 
 class DocSign extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      cert_name: "",
-      swarmId: "",
-      getFile: null
-    };
-  }
+  state = {
+    cert_name: "",
+    swarmId: "",
+    getFile: ""
+  };
 
+  //make changes here, props never changes
   async componentDidMount() {
-    this.setState({ cert_name: this.props.match.params.certname });
+    await this.setState({ cert_name: this.props.match.params.certname });
     this.getSwarmId();
-
-    this.getFileRaw();
   }
 
   getFileRaw = () => {
@@ -181,10 +177,9 @@ class DocSign extends Component {
     console.log("ye hai " + url);
 
     fetch(url)
-      .then(response => console.log(response.text()))
+      .then(response => response.text())
       .then(text => this.setState({ getFile: text }))
       .catch(err => console.log(err));
-    console.log(this.state.getFile);
   };
 
   getSwarmId = () => {
@@ -194,7 +189,10 @@ class DocSign extends Component {
     fetch(url)
       .then(response => response.json())
       .then(response => this.setState({ swarmId: response.data[0].swarm_id }))
+      .then(this.getFileRaw)
       .catch(err => console.log(err));
+
+    //  this.getFileRaw();
   };
 
   handleRejectButtonClick = e => {
