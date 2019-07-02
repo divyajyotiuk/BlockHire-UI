@@ -11,15 +11,19 @@ import {
   Icon,
   Input
 } from "semantic-ui-react";
+import BzzAPI from "@erebos/api-bzz-browser";
 
 class Experience extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      openModal: false,
       certificate_name: "",
       _status: "Validate",
       sender: "dj1",
-      certs: []
+      certs: [],
+      file: null,
+      c_hash: ""
     };
   }
 
@@ -47,7 +51,8 @@ class Experience extends Component {
       body: JSON.stringify({
         certiname: this.state.certificate_name,
         sentby: this.state.sender,
-        status: this.state._status
+        status: this.state._status,
+        swarm_id: this.state.c_hash
       }), // data can be `string` or {object}!
       headers: {
         "Content-Type": "application/json"
@@ -57,26 +62,63 @@ class Experience extends Component {
       .then(response => console.log("Success:", JSON.stringify(response)))
       .catch(error => console.error("Error:", error));
 
-    this.fetchCertificates();
+    this.setState({ openModal: false });
   };
 
   handleChange = e => {
     this.setState({ certificate_name: e.target.value });
   };
 
+  handleModal = e => {
+    this.setState({ openModal: true });
+  };
+
+  onFileChange = event => {
+    this.setState({
+      file: event.target.files[0]
+    });
+    console.log(this.state.file);
+    //upload to swarm
+    let reader = new FileReader();
+    reader.readAsDataURL(event.target.files[0]);
+    reader.onload = event => {
+      console.warn("img data", reader.result);
+      const bzz = new BzzAPI({ url: "https://swarm-gateways.net" });
+      bzz
+        .uploadFile(reader.result, { contentType: "text/plain" })
+        .then(hash => {
+          bzz.download(hash);
+          console.log(hash);
+          this.setState({ c_hash: hash });
+        });
+    };
+  };
+
   render() {
     return (
       <Segment size="large" style={{ marginTop: 50 }}>
-        <Modal trigger={<Button>Add Experience</Button>} closeIcon>
+        <Modal
+          trigger={<Button onClick={this.handleModal}>Add Experience</Button>}
+          open={this.state.openModal}
+        >
           <Segment>
             <div>
-              Certificate Name
-              <input
+              <Label> Certificate Name</Label>
+              <Input
                 value={this.state.certificate_name}
                 onChange={this.handleChange}
               />{" "}
-              <Button onClick={this.handleClick}>Add</Button>
             </div>
+            <div>
+              <Header icon>
+                <Icon name="pdf file outline" />
+                No documents are listed for this customer.
+              </Header>
+            </div>
+            <div>
+              <Input type="file" name="file" onChange={this.onFileChange} />
+            </div>
+            <Button onClick={this.handleClick}>Add</Button>
           </Segment>
         </Modal>
         {this.state.certs.map((listItem, i) => (
@@ -150,13 +192,12 @@ class EditExperience extends Component {
       <Segment>
         <Grid>
           <Grid.Column width={11}>
+            {/* Add edit options here */}
             <Modal
               trigger={
                 <Label as="a" attached="top right" icon="edit outline" />
               }
-            >
-              <DocUpload />
-            </Modal>
+            />
             <h3>Content </h3>
             <h3>{this.props.content}</h3>
             <Button
@@ -184,19 +225,5 @@ class EditExperience extends Component {
     );
   }
 }
-
-const DocUpload = () => (
-  <Segment placeholder>
-    <div>
-      <Header icon>
-        <Icon name="pdf file outline" />
-        No documents are listed for this customer.
-      </Header>
-    </div>
-    <div>
-      <Button primary>Add Document</Button>
-    </div>
-  </Segment>
-);
 
 export default Experience;
