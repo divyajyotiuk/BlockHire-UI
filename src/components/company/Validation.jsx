@@ -14,7 +14,7 @@ import { Switch, Route, Link, BrowserRouter as Router } from "react-router-dom";
 
 //import { Document, Page } from "react-pdf";
 //import { Document, Page } from "react-pdf/dist/entry.parcel";
-import { Document } from "react-pdf/dist/entry.webpack";
+import { Document, Page } from "react-pdf/dist/entry.webpack";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import { callbackify } from "util";
 
@@ -159,6 +159,11 @@ const RouteCertificate = () => (
   </React.Fragment>
 );
 
+const options = {
+  cMapUrl: "cmaps/",
+  cMapPacked: true
+};
+
 class DocSign extends Component {
   state = {
     cert_name: "",
@@ -191,8 +196,6 @@ class DocSign extends Component {
       .then(response => this.setState({ swarmId: response.data[0].swarm_id }))
       .then(this.getFileRaw)
       .catch(err => console.log(err));
-
-    //  this.getFileRaw();
   };
 
   handleRejectButtonClick = e => {
@@ -280,7 +283,9 @@ class DisplayCertificate extends Component {
   render() {
     return (
       <Segment>
-        <Document file={this.props.item} />
+        <Document file={this.props.item} options={options}>
+          <Page />
+        </Document>
       </Segment>
     );
   }

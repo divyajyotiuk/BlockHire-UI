@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./styles/TopBar.css";
+import "../styles/TopBar.css";
 import { Link } from "react-router-dom";
 import { Menu, Dropdown, Search } from "semantic-ui-react";
 

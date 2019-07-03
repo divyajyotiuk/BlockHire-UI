@@ -4,6 +4,8 @@
   "private": true,
   "dependencies": {
     "@erebos/swarm-browser": "^0.8.1",
+    "@react-pdf/renderer": "^1.6.3",
+    "base-64": "^0.1.0",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "expressjs": "^1.0.1",

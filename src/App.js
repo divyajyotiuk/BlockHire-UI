@@ -1,6 +1,6 @@
 import React from "react";
 import "./App.css";
-import Main from "./components/Main";
+import Main from "./components/jobseeker/Main";
 import MainCompany from "./components/company/MainCompany";
 import HomePage from "./components/HomePage";
 

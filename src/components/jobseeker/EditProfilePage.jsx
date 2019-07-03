@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./styles/EditProfilePage.css";
+import "../styles/EditProfilePage.css";
 import {
   Button,
   Container,
