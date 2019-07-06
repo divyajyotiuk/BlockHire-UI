@@ -38,10 +38,41 @@ app.get("/Category/:wallet_address", function(req, res) {
   );
 });
 
-app.get("/CertificateStatus/:swarm_id", function(req, res) {
+app.get("/ExperienceStatus/:swarm_id", function(req, res) {
   connection.query(
     "select status from Experience where swarm_id=?",
     [req.params.swarm_id],
+    function(err, results) {
+      err ? res.send(err) : res.json({ data: results });
+    }
+  );
+});
+
+app.get("/EducationStatus/:swarm_id", function(req, res) {
+  connection.query(
+    "select status from Education where swarm_id=?",
+    [req.params.swarm_id],
+    function(err, results) {
+      err ? res.send(err) : res.json({ data: results });
+    }
+  );
+});
+
+//Fetching data from Views
+app.get("/ExperienceUserView/:vr_id", function(req, res) {
+  connection.query(
+    "select first_name,last_name from ExperienceUserView where vr_id=?",
+    [req.params.vr_id],
+    function(err, results) {
+      err ? res.send(err) : res.json({ data: results });
+    }
+  );
+});
+
+app.get("/EducationUserView/:vr_id", function(req, res) {
+  connection.query(
+    "select first_name,last_name from EducationUserView where vr_id=?",
+    [req.params.vr_id],
     function(err, results) {
       err ? res.send(err) : res.json({ data: results });
     }
@@ -158,7 +189,7 @@ app.get("/getCategory/:vr_id", function(req, res) {
 });
 
 //update status of certificate in Experience to pending
-app.put("changeExperienceState/:swarm_id", function(req, res) {
+app.put("/changeExperienceState/:swarm_id", function(req, res) {
   connection.query(
     "UPDATE Experience SET status=?  WHERE swarm_id =?",
     [req.body.status, req.params.swarm_id],
@@ -169,7 +200,7 @@ app.put("changeExperienceState/:swarm_id", function(req, res) {
 });
 
 //update certificate status Done after validating
-app.post("AcceptDoc/:swarm_id", function(req, res) {
+app.post("/AcceptDoc/:swarm_id", function(req, res) {
   connection.query(
     "update Experience set status='Done' where swarm_id =?",
     [req.params.swarm_id],
@@ -180,7 +211,7 @@ app.post("AcceptDoc/:swarm_id", function(req, res) {
 });
 
 //update certificate status Rejected after validating
-app.post("RejectDoc/:swarm_id", function(req, res) {
+app.post("/RejectDoc/:swarm_id", function(req, res) {
   connection.query(
     "UPDATE ?? SET status='Rejected'  WHERE swarm_id =?",
     [req.body.category, req.params.swarm_id],

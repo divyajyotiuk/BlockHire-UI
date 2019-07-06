@@ -30,23 +30,89 @@ class Validation extends Component {
 
   //validationList contains validation requests
   handleItemClick = (e, { name }) => {
-    // const newlist = this.state.fullList.filter(el => {
-    //   return el.status === name;
-    // });
+    const newlist = this.state.fullList.filter(el => {
+      return el.status === name;
+    });
     this.setState({
-      activeItem: name
-      //  validationList: newlist
+      activeItem: name,
+      validationList: newlist
     });
   };
 
-  componentDidMount() {
-    this.getValidationRequests();
+  async componentDidMount() {
+    await this.getValidationRequests();
+    console.log(this.state.fullList);
   }
 
+  getUserName = () => {
+    for (var i = 0; i < this.state.validationList.length; i++) {}
+  };
+
+  getStatus = async () => {
+    for (var i = 0; i < this.state.validationList.length; i++) {
+      var category = this.state.validationList[i].category;
+      var swarm = this.state.validationList[i].swarm_id;
+      var vrID = this.state.validationList[i].vr_id;
+      if (category === "Experience") {
+        var url = "http://localhost:4000/ExperienceStatus/" + swarm;
+        await fetch(url)
+          .then(response => response.json())
+          .then(response =>
+            this.setState(
+              (this.state.fullList[i].status = response.data[0].status)
+            )
+          )
+          .catch(err => console.log(err));
+
+        var url1 = "http://localhost:4000/ExperienceUserView/" + vrID;
+        await fetch(url1)
+          .then(response => response.json())
+          .then(response =>
+            this.setState(
+              (this.state.fullList[i].first_name = response.data[0].first_name),
+              (this.state.fullList[i].last_name = response.data[0].last_name)
+            )
+          )
+          .catch(err => console.log(err));
+      } else if (category === "Education") {
+        var url = "http://localhost:4000/EducationStatus/" + swarm;
+        await fetch(url)
+          .then(response => response.json())
+          .then(response =>
+            this.setState(
+              (this.state.fullList[i].status = response.data[0].status)
+            )
+          )
+          .catch(err => console.log(err));
+
+        var url1 = "http://localhost:4000/EducationUserView/" + vrID;
+        await fetch(url1)
+          .then(response => response.json())
+          .then(response =>
+            this.setState(
+              (this.state.fullList[i].first_name = response.data[0].first_name),
+              (this.state.fullList[i].last_name = response.data[0].last_name)
+            )
+          )
+          .catch(err => console.log(err));
+      }
+    }
+  };
+
   getValidationRequests = () => {
-    fetch("http://localhost:4000/ValidationRequests")
+    var url = "http://localhost:4000/ValidationRequests/"; //+sessionState.getItem("LoggedUser");
+    fetch(url)
       .then(response => response.json())
       .then(response => this.setState({ validationList: response.data }))
+      .then(() => {
+        this.setState({ fullList: this.state.validationList });
+        this.state.fullList.map(
+          item => (
+            (item.status = ""), (item.first_name = ""), (item.last_name = "")
+          )
+        );
+        this.getStatus();
+      })
       .catch(err => console.log(err));
   };
   render() {
@@ -121,7 +187,9 @@ const RequestListItems = props => (
         <List.Icon name="paperclip" size="large" verticalAlign="middle" />
         <List.Content>
           <List.Header color="blue">Request ID {listItem.vr_id}</List.Header>
-          <List.Description>Swarm ID {listItem.swarm_id}</List.Description>
+          <List.Description>
+            by {listItem.first_name} {listItem.last_name}
+          </List.Description>
         </List.Content>
       </List.Item>
     ))}
@@ -188,7 +256,7 @@ class DocSign extends Component {
 
   handleRejectButtonClick = e => {
     e.preventDefault();
-    var url = "http://localhost:4000/RejectDoc" + this.state.swarmId;
+    var url = "http://localhost:4000/RejectDoc/" + this.state.swarmId;
 
     fetch(url, {
       method: "POST", // or 'PUT'
