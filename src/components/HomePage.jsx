@@ -24,6 +24,8 @@ const square = { width: 250, height: 250 };
 const portis = new Portis("61f1e9b2-488e-4a59-a3e3-24e855799d8d", "ropsten");
 const web3 = new Web3(portis.provider);
 
+sessionStorage.setItem("portisWallet", portis);
+
 const getWidth = () => {
   const isSSR = typeof window === "undefined";
 
@@ -31,10 +33,15 @@ const getWidth = () => {
 };
 
 class HomePage extends Component {
-  state = {
-    wallet_add: "",
-    category: ""
-  };
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      wallet_add: "",
+      category: ""
+    };
+  }
+
   onHandleClick(text, name) {
     this.setState({
       wallet_add: text
@@ -60,7 +67,7 @@ class HomePage extends Component {
             method: "POST", // or 'PUT'
             mode: "cors",
             body: JSON.stringify({
-              wallet_addr: this.state.wallet_add,
+              wallet_address: this.state.wallet_add,
               category: name
             }), // data can be `string` or {object}!
             headers: {
@@ -100,9 +107,6 @@ class HomePage extends Component {
         }
       })
       .catch(err => console.log(err));
-    console.log("num");
-    console.log(num);
-    console.log(this.state.wallet_add);
   }
 
   render() {
@@ -128,6 +132,7 @@ class HomePage extends Component {
                     type="button"
                     onClick={async () => {
                       var candidateAddress = await portis.provider.enable();
+                      sessionStorage.setItem("LoggedUser", candidateAddress);
                       if (candidateAddress.length > 0) {
                         this.onHandleClick(
                           String(candidateAddress[0]),
@@ -158,7 +163,7 @@ class HomePage extends Component {
                     type="button"
                     onClick={async () => {
                       var companyAddress = await portis.provider.enable();
-
+                      sessionStorage.setItem("LoggedUser", companyAddress);
                       if (companyAddress.length > 0) {
                         this.onHandleClick(
                           String(companyAddress[0]),

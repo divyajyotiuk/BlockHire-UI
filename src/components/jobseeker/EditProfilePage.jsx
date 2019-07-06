@@ -28,11 +28,15 @@ class EditProfilePage extends Component {
 
   getUserInfo = _ => {
     var url =
-      "http://localhost:4000/About/" + this.props.location.state[0].wallet_add;
+      // "http://localhost:4000/About/" + this.props.location.state[0].wallet_add;
+      "http://localhost:4000/About/" + sessionStorage.getItem("LoggedUser");
     fetch(url)
       .then(response => response.json())
       .then(response => this.setState({ about: response.data }))
       .catch(err => console.log(err));
+
+    console.log("Session user");
+    console.log(sessionStorage.getItem("getUser"));
   };
 
   render() {
@@ -41,7 +45,8 @@ class EditProfilePage extends Component {
         <Container>
           <AboutContainer passed={this.state.about} />
           <AddSectionToProfile />
-          <Experience id={this.props.location.state[0].wallet_add} />
+          {/* <Experience id={this.props.location.state[0].wallet_add} /> */}
+          <Experience />
           <Education />
         </Container>
       </div>

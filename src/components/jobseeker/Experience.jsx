@@ -27,7 +27,7 @@ class Experience extends Component {
       to: "",
       swarm: "",
       desc: "",
-      status: "Validate",
+      // status: "Validate",
       expiry: ""
     };
   }
@@ -37,7 +37,9 @@ class Experience extends Component {
   }
 
   fetchCertificates = () => {
-    var url = "http://localhost:4000/Experience/" + this.props.id;
+    var url =
+      "http://localhost:4000/Experience/" +
+      sessionStorage.getItem("LoggedUser");
     console.log(url);
     fetch(url)
       .then(response => response.json())
@@ -62,7 +64,7 @@ class Experience extends Component {
           to: this.state.to,
           swarm_id: this.state.swarm,
           description: this.state.desc,
-          status: this.state.status,
+          // status: this.state.status,
           expiry: this.state.expiry
         }), // data can be `string` or {object}!
         headers: {
@@ -194,7 +196,7 @@ class Experience extends Component {
             from={listItem.from}
             to={listItem.to}
             desc={listItem.description}
-            c_status={listItem.status}
+            // c_status={listItem.status}
             expiry={listItem.expiry}
             swarmid={listItem.swarm_id}
           />
@@ -211,26 +213,51 @@ class Experience extends Component {
 // );
 
 class EditExperience extends Component {
-  state = { cert_state: "Validate", swarmId: "" };
+  state = { cert_state: "Validate", swarmId: "", company_id: "" };
 
   //check from database
   componentDidMount() {
+    this.fetchOrgId();
     this.setState({
-      cert_state: this.props.c_status,
       swarmId: this.props.swarmid
     });
+    this.fetchStatus();
   }
+
+  fetchStatus = () => {
+    var url = "http://localhost:4000/CertificateStatus/" + this.props.swarmid;
+    console.log(url);
+    fetch(url)
+      .then(response => response.json())
+      .then(response => {
+        if (response.data.length > 0) {
+          this.setState({ cert_state: response.data });
+        }
+      })
+      .catch(err => console.log(err));
+  };
+
+  fetchOrgId = () => {
+    var url = "http://localhost:4000/CompanyID/" + this.props.org;
+    console.log(url);
+    fetch(url)
+      .then(response => response.json())
+      .then(response => this.setState({ company_id: response.data }))
+      .catch(err => console.log(err));
+  };
   //changes status to pending, disables the button
   onClickValidate = () => {
+    this.fetchOrgId();
     this.setState({ cert_state: "Pending" });
     var url = "http://localhost:4000/Validation";
 
     fetch(url, {
-      method: "PUT", // or 'PUT'
+      method: "POST", // or 'PUT'
       mode: "cors",
       body: JSON.stringify({
         swarm_id: this.state.swarmId,
-        status: "Pending"
+        status: "Pending",
+        company_id: this.state.company_id
       }), // data can be `string` or {object}!
       headers: {
         "Content-Type": "application/json"
