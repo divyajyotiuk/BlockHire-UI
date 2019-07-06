@@ -40,7 +40,7 @@ app.get("/Category/:wallet_address", function(req, res) {
 
 app.get("/CertificateStatus/:swarm_id", function(req, res) {
   connection.query(
-    "select status from Validation_Requests where swarm_id=?",
+    "select status from Experience where swarm_id=?",
     [req.params.swarm_id],
     function(err, results) {
       err ? res.send(err) : res.json({ data: results });
@@ -131,31 +131,59 @@ app.put("/EditCompany/:company_id", function(req, res) {
 //       err ? res.send(err) : res.json({ data: results });
 //   });
 
-app.get("/certis/:sentby", function(req, res) {
+app.get("/ValidationRequests", function(req, res) {
+  connection.query("SELECT * FROM Validation_Requests", function(err, results) {
+    err ? res.send(err) : res.json({ data: results });
+  });
+});
+
+app.get("/SwarmID/:vr_id", function(req, res) {
   connection.query(
-    "SELECT * FROM validateRequests WHERE `sentby` =?",
-    [req.params.sentby],
+    "SELECT swarm_id FROM Validation_Requests WHERE `vr_id` =?",
+    [req.params.vr_id],
     function(err, results) {
       err ? res.send(err) : res.json({ data: results });
     }
   );
 });
 
-app.get("/certificate/:certiname", function(req, res) {
+app.get("/getCategory/:vr_id", function(req, res) {
   connection.query(
-    "SELECT swarm_id FROM validateRequests WHERE `certiname` =?",
-    [req.params.certiname],
+    "SELECT category FROM Validation_Requests WHERE `vr_id` =?",
+    [req.params.vr_id],
     function(err, results) {
       err ? res.send(err) : res.json({ data: results });
     }
   );
 });
 
-//update status of certificate
-app.put("/validation", function(req, res) {
+//update status of certificate in Experience to pending
+app.put("changeExperienceState/:swarm_id", function(req, res) {
   connection.query(
-    "UPDATE `validateRequests` SET `status`=?  WHERE `certiname` =?",
-    [req.body.stat, req.body.cert],
+    "UPDATE Experience SET status=?  WHERE swarm_id =?",
+    [req.body.status, req.params.swarm_id],
+    function(err, results, fields) {
+      err ? res.send(err) : res.send(JSON.stringify(results));
+    }
+  );
+});
+
+//update certificate status Done after validating
+app.post("AcceptDoc/:swarm_id", function(req, res) {
+  connection.query(
+    "update Experience set status='Done' where swarm_id =?",
+    [req.params.swarm_id],
+    function(err, results, fields) {
+      err ? res.send(err) : res.send(JSON.stringify(results));
+    }
+  );
+});
+
+//update certificate status Rejected after validating
+app.post("RejectDoc/:swarm_id", function(req, res) {
+  connection.query(
+    "UPDATE ?? SET status='Rejected'  WHERE swarm_id =?",
+    [req.body.category, req.params.swarm_id],
     function(err, results, fields) {
       err ? res.send(err) : res.send(JSON.stringify(results));
     }
@@ -175,14 +203,14 @@ app.delete("/DeleteExperience", function(req, res) {
 
 app.post("/Validation", function(req, res) {
   var postData = req.body;
-  connection.query(
-    "INSERT INTO Validation_Requests (swarm_id,company_id,status) VALUES ?",
-    postData,
-    function(error, results, fields) {
-      if (error) throw error;
-      res.end(JSON.stringify(results));
-    }
-  );
+  connection.query("INSERT INTO Validation_Requests SET ?", postData, function(
+    error,
+    results,
+    fields
+  ) {
+    if (error) throw error;
+    res.end(JSON.stringify(results));
+  });
 });
 
 app.post("/UserTable", function(req, res) {

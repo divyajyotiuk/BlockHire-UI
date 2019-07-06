@@ -23,10 +23,14 @@ class EditProfilePage extends Component {
   }
 
   async componentDidMount() {
+    console.log(sessionStorage.getItem("LoggedUser"));
     await this.getUserInfo();
   }
 
   getUserInfo = _ => {
+    console.log("Session user");
+    console.log(sessionStorage.getItem("getUser"));
+
     var url =
       // "http://localhost:4000/About/" + this.props.location.state[0].wallet_add;
       "http://localhost:4000/About/" + sessionStorage.getItem("LoggedUser");
@@ -34,9 +38,6 @@ class EditProfilePage extends Component {
       .then(response => response.json())
       .then(response => this.setState({ about: response.data }))
       .catch(err => console.log(err));
-
-    console.log("Session user");
-    console.log(sessionStorage.getItem("getUser"));
   };
 
   render() {

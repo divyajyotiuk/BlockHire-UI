@@ -24,8 +24,6 @@ const square = { width: 250, height: 250 };
 const portis = new Portis("61f1e9b2-488e-4a59-a3e3-24e855799d8d", "ropsten");
 const web3 = new Web3(portis.provider);
 
-sessionStorage.setItem("portisWallet", portis);
-
 const getWidth = () => {
   const isSSR = typeof window === "undefined";
 
@@ -43,6 +41,8 @@ class HomePage extends Component {
   }
 
   onHandleClick(text, name) {
+    console.log("wallet...............");
+    console.log(text);
     this.setState({
       wallet_add: text
     });
@@ -77,7 +77,7 @@ class HomePage extends Component {
             .then(res => res.body)
             .then(response => console.log("Success:", JSON.stringify(response)))
             .catch(error => console.error("Error:", error));
-          if (name == "JobSeeker") {
+          if (name === "JobSeeker") {
             this.props.history.push(
               "/JobSeekerRegistration",
               //{},
@@ -91,7 +91,7 @@ class HomePage extends Component {
             );
           }
         } else {
-          if (name == "JobSeeker") {
+          if (name === "JobSeeker") {
             this.props.history.replace(
               "/jobseeker/profile",
               //{},
@@ -132,6 +132,7 @@ class HomePage extends Component {
                     type="button"
                     onClick={async () => {
                       var candidateAddress = await portis.provider.enable();
+                      console.log(candidateAddress[0]);
                       sessionStorage.setItem("LoggedUser", candidateAddress[0]);
                       if (candidateAddress.length > 0) {
                         this.onHandleClick(

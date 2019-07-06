@@ -18,10 +18,10 @@ const MainCompany = () => {
         <TopBar />
         <Switch>
           <Route exact path="/company/profile" component={EditProfilePage} />
-          <Route exact path="/jobs" component={Jobs} />
-          <Route exact path="/account" component={Account} />
-          <Route exact path="/validation" component={Validation} />
-          <Route exact path="/notifications" component={Notifications} />
+          <Route path="/jobs" component={Jobs} />
+          <Route path="/account" component={Account} />
+          <Route path="/validation" component={Validation} />
+          <Route path="/notifications" component={Notifications} />
         </Switch>
       </Router>
     );

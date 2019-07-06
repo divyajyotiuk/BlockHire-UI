@@ -64,8 +64,7 @@ class TopBar extends Component {
               <Dropdown.Item
                 onClick={() => {
                   sessionStorage.clear();
-                  var wallet = sessionStorage.getItem("portisWallet");
-                  wallet.showPortis();
+
                   //this.props.history.replace("/");
                 }}
               >

@@ -27,7 +27,7 @@ class Experience extends Component {
       to: "",
       swarm: "",
       desc: "",
-      // status: "Validate",
+      status: "Validate",
       expiry: ""
     };
   }
@@ -45,6 +45,7 @@ class Experience extends Component {
       .then(response => response.json())
       .then(response => this.setState({ exp_data: response.data }))
       .catch(err => console.log(err));
+    console.log(this.state.exp_data);
   };
 
   handleClick = e => {
@@ -57,14 +58,14 @@ class Experience extends Component {
         method: "POST", // or 'PUT'
         mode: "cors",
         body: JSON.stringify({
-          user_id: this.props.id,
+          user_id: sessionStorage.getItem("LoggedUser"),
           job_title: this.state.jobtitle,
           organisation: this.state.org,
           from: this.state.from,
           to: this.state.to,
           swarm_id: this.state.swarm,
           description: this.state.desc,
-          // status: this.state.status,
+          status: this.state.status,
           expiry: this.state.expiry
         }), // data can be `string` or {object}!
         headers: {
@@ -196,7 +197,7 @@ class Experience extends Component {
             from={listItem.from}
             to={listItem.to}
             desc={listItem.description}
-            // c_status={listItem.status}
+            c_status={listItem.status}
             expiry={listItem.expiry}
             swarmid={listItem.swarm_id}
           />
@@ -213,15 +214,13 @@ class Experience extends Component {
 // );
 
 class EditExperience extends Component {
-  state = { cert_state: "Validate", swarmId: "", company_id: "" };
+  state = { cert_state: "Validate", swarmId: "", category: "Experience" };
 
   //check from database
-  componentDidMount() {
-    this.fetchOrgId();
-    this.setState({
+  async componentDidMount() {
+    await this.setState({
       swarmId: this.props.swarmid
     });
-    this.fetchStatus();
   }
 
   fetchStatus = () => {
@@ -230,34 +229,23 @@ class EditExperience extends Component {
     fetch(url)
       .then(response => response.json())
       .then(response => {
-        if (response.data.length > 0) {
-          this.setState({ cert_state: response.data });
-        }
+        this.setState({ cert_state: response.data });
       })
       .catch(err => console.log(err));
   };
 
-  fetchOrgId = () => {
-    var url = "http://localhost:4000/CompanyID/" + this.props.org;
-    console.log(url);
-    fetch(url)
-      .then(response => response.json())
-      .then(response => this.setState({ company_id: response.data }))
-      .catch(err => console.log(err));
-  };
-  //changes status to pending, disables the button
-  onClickValidate = () => {
-    this.fetchOrgId();
+  changeStatus = () => {
     this.setState({ cert_state: "Pending" });
-    var url = "http://localhost:4000/Validation";
+
+    var url =
+      "http://localhost:4000/changeExperienceState/" + this.state.swarmId;
+    console.log(url);
 
     fetch(url, {
-      method: "POST", // or 'PUT'
+      method: "PUT", // or 'PUT'
       mode: "cors",
       body: JSON.stringify({
-        swarm_id: this.state.swarmId,
-        status: "Pending",
-        company_id: this.state.company_id
+        status: "Pending"
       }), // data can be `string` or {object}!
       headers: {
         "Content-Type": "application/json"
@@ -266,6 +254,28 @@ class EditExperience extends Component {
       .then(res => res.body)
       .then(response => console.log("Success:", JSON.stringify(response)))
       .catch(error => console.error("Error:", error));
+  };
+
+  //changes status to pending, disables the button
+  onClickValidate = () => {
+    //adding data to validation_requests table
+    // var url = "http://localhost:4000/Validation";
+    // fetch(url, {
+    //   method: "POST", // or 'PUT'
+    //   mode: "cors",
+    //   body: JSON.stringify({
+    //     swarm_id: this.state.swarmId,
+    //     category: "Experience"
+    //   }), // data can be `string` or {object}!
+    //   headers: {
+    //     "Content-Type": "application/json"
+    //   }
+    // })
+    //   .then(res => res.body)
+    //   .then(response => console.log("Success:", JSON.stringify(response)))
+    //   .catch(error => console.error("Error:", error));
+
+    this.changeStatus();
   };
 
   onClickDelete = () => {
