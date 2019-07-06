@@ -132,7 +132,7 @@ class HomePage extends Component {
                     type="button"
                     onClick={async () => {
                       var candidateAddress = await portis.provider.enable();
-                      sessionStorage.setItem("LoggedUser", candidateAddress);
+                      sessionStorage.setItem("LoggedUser", candidateAddress[0]);
                       if (candidateAddress.length > 0) {
                         this.onHandleClick(
                           String(candidateAddress[0]),
@@ -163,7 +163,8 @@ class HomePage extends Component {
                     type="button"
                     onClick={async () => {
                       var companyAddress = await portis.provider.enable();
-                      sessionStorage.setItem("LoggedUser", companyAddress);
+                      console.log(companyAddress);
+                      sessionStorage.setItem("LoggedUser", companyAddress[0]);
                       if (companyAddress.length > 0) {
                         this.onHandleClick(
                           String(companyAddress[0]),

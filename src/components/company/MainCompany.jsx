@@ -9,30 +9,23 @@ import Account from "./Account";
 import Notifications from "./Notifications";
 import Validation from "./Validation";
 
-const MainCompany = () => 
-{
-  if(sessionStorage.getItem('LoggedUser')===null)
-  {
+const MainCompany = () => {
+  if (sessionStorage.getItem("LoggedUser") === null) {
+    return <div>Page not found!</div>;
+  } else {
     return (
-      <div>
-        Page not found!
-      </div>
+      <Router>
+        <TopBar />
+        <Switch>
+          <Route exact path="/company/profile" component={EditProfilePage} />
+          <Route exact path="/jobs" component={Jobs} />
+          <Route exact path="/account" component={Account} />
+          <Route exact path="/validation" component={Validation} />
+          <Route exact path="/notifications" component={Notifications} />
+        </Switch>
+      </Router>
     );
   }
- else{
-  return(
-  <Router>
-    <Switch>
-      <TopBar />
-      <Route exact path="/company/profile" component={EditProfilePage} />
-      <Route exact path="/jobs" component={Jobs} />
-      <Route exact path="/account" component={Account} />
-      <Route exact path="/validation" component={Validation} />
-      <Route exact path="/notifications" component={Notifications} />
-    </Switch>
-  </Router>
-);
- }
-}
+};
 
 export default MainCompany;

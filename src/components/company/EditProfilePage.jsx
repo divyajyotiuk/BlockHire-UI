@@ -24,9 +24,9 @@ class EditProfilePage extends Component {
 
   getUserInfo = _ => {
     //  var url = "http://localhost:4000/Company/" + this.props.location.state[0].wallet_add;
-    fetch(
-      "http://localhost:4000/Company/" + sessionStorage.getItem("LoggedUser")
-    )
+    var url =
+      "http://localhost:4000/Company/" + sessionStorage.getItem("LoggedUser");
+    fetch(url)
       .then(response => response.json())
       .then(response =>
         this.setState({
@@ -34,6 +34,7 @@ class EditProfilePage extends Component {
         })
       )
       .catch(err => console.log(err));
+    console.log(this.state.about);
   };
 
   render() {

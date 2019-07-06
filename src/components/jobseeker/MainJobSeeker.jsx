@@ -14,8 +14,8 @@ const MainJobSeeker = () => {
   } else {
     return (
       <Router>
+        <TopBar />
         <Switch>
-          <TopBar />
           <Route exact path="/jobseeker/profile" component={EditProfilePage} />
           <Route exact path="/jobs" component={Jobs} />
           <Route exact path="/account" component={Account} />
