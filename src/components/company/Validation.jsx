@@ -183,7 +183,11 @@ const RouteMenu = props => (
 const RequestListItems = props => (
   <List divided relaxed>
     {props.passed.map((listItem, i) => (
-      <List.Item key={i} as={Link} to={`/validation/pending/${listItem.vr_id}`}>
+      <List.Item
+        key={i}
+        as={Link}
+        to={`/validation/${listItem.status}/${listItem.vr_id}`}
+      >
         <List.Icon name="paperclip" size="large" verticalAlign="middle" />
         <List.Content>
           <List.Header color="blue">Request ID {listItem.vr_id}</List.Header>
@@ -199,13 +203,10 @@ const RequestListItems = props => (
 const RouteCertificate = () => (
   <React.Fragment>
     <Switch>
-      <Route exact path="/validation/pending/:vrID" component={DocSign} />
+      <Route exact path="/validation/Pending/:vrID" component={DocSign} />
+      <Route path="/validation/Done/:vrID" component={DisplayDoneCertificate} />
       <Route
-        path="/validation/done/:certname"
-        component={DisplayDoneCertificate}
-      />
-      <Route
-        path="/validation/rejected/:certname"
+        path="/validation/Rejected/:vrID"
         component={DisplayRejectedCertificate}
       />
     </Switch>
@@ -380,13 +381,13 @@ class DocSign extends Component {
 
 const DisplayDoneCertificate = ({ match }) => (
   <Segment>
-    <h3>Validated Certificate displayed here ID: {match.params.certname} </h3>
+    <h3>Certificate with ID: {match.params.vrID} was Validated</h3>
   </Segment>
 );
 
-const DisplayRejectedCertificate = () => (
+const DisplayRejectedCertificate = ({ match }) => (
   <Segment>
-    <h3>Rejected Certificate displayed here</h3>
+    <h3>Certificate with ID: {match.params.vrID} was Rejected</h3>
   </Segment>
 );
 
